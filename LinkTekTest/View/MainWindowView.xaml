@@ -1,0 +1,146 @@
+﻿<Window x:Class="LinkTekTest.View.MainWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodel="clr-namespace:LinkTekTest.ViewModel"
+        xmlns:system="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
+        xmlns:control="clr-namespace:LinkTekTest.Control"
+        xmlns:converter="clr-namespace:LinkTekTest.Converter"
+        mc:Ignorable="d"
+        Title="The Best Application Ever" Height="500" MinHeight="500" Width="750" MinWidth="750" Background="Gray">
+
+    <Window.DataContext>
+        <viewmodel:MainWindowViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/LinkTekTest;component/Style/Button.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/LinkTekTest;component/Style/DataGrid.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/LinkTekTest;component/Style/ComboBox.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <system:GridLength x:Key="Padding">25</system:GridLength>
+            <converter:BoolToBackgroundConverter x:Key="BoolToBackgroundConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{StaticResource Padding}"/>
+            <RowDefinition/>
+            <RowDefinition Height="{StaticResource Padding}"/>
+            <RowDefinition/>
+            <RowDefinition Height="{StaticResource Padding}"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{StaticResource Padding}"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="{StaticResource Padding}"/>
+        </Grid.ColumnDefinitions>
+
+        <control:CustomDataGrid Grid.Column="1" Grid.Row="1" Style="{StaticResource {x:Type DataGrid}}" ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee}" CanUserAddRows="False" AutoGenerateColumns="False">
+            <control:CustomDataGrid.Columns>
+                <DataGridTextColumn Header="FirstName" Binding="{Binding FirstName, Mode=OneWay}" Width="*"/>
+                <DataGridTextColumn Header="LastName" Binding="{Binding LastName, Mode=OneWay}" Width="*"/>
+                <DataGridTextColumn Header="Number" Binding="{Binding Address.Number, Mode=OneWay}" Width="100"/>
+                <DataGridTextColumn Header="Street" Binding="{Binding Address.Street, Mode=OneWay}" Width="*"/>
+                <DataGridTextColumn Header="City" Binding="{Binding Address.City, Mode=OneWay}" Width="100"/>
+                <DataGridTemplateColumn Header="Email" Width="200">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Emails}" DisplayMemberPath="EmailAddress" SelectedItem="{Binding SelectedEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </control:CustomDataGrid.Columns>
+        </control:CustomDataGrid>
+        <Grid Grid.Row="3" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" FontWeight="SemiBold" FontSize="15" Text="Name"/>
+            <DockPanel Grid.Row="3" Grid.Column="0" Height="25">
+                <Label Content="First Name" Target="{Binding ElementName=FirstName}" VerticalAlignment="Center" Width="80"/>
+                <TextBox x:Name="FirstName" 
+                                       Text="{Binding SelectedEmployee.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       Background="{Binding SelectedEmployee.FirstNameIsChanged, Converter={StaticResource BoolToBackgroundConverter}}"
+                                       VerticalContentAlignment="Center"/>
+            </DockPanel>
+            <DockPanel Grid.Row="4" Grid.Column="0" Height="25">
+                <Label Content="Last Name" Target="{Binding ElementName=LastName}" VerticalAlignment="Center" Width="80"/>
+                <TextBox x:Name="LastName" 
+                         Text="{Binding SelectedEmployee.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding SelectedEmployee.LastNameIsChanged, Converter={StaticResource BoolToBackgroundConverter}}"
+                         VerticalContentAlignment="Center"/>
+            </DockPanel>
+
+            <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" FontWeight="SemiBold" FontSize="15" Text="Address"/>
+            <DockPanel Grid.Row="3" Grid.Column="1" Height="25">
+                <Label Content="Number" Target="{Binding ElementName=Number}" VerticalAlignment="Center" Width="80"/>
+                <TextBox x:Name="Number" 
+                         Text="{Binding SelectedEmployee.Address.Number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding SelectedEmployee.Address.NumberIsChanged, Converter={StaticResource BoolToBackgroundConverter}}"
+                         VerticalContentAlignment="Center"/>
+            </DockPanel>
+            <DockPanel Grid.Row="4" Grid.Column="1" Height="25">
+                <Label Content="Street" Target="{Binding ElementName=Street}" VerticalAlignment="Center" Width="80"/>
+                <TextBox x:Name="Street" 
+                         Text="{Binding SelectedEmployee.Address.Street, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding SelectedEmployee.Address.StreetIsChanged, Converter={StaticResource BoolToBackgroundConverter}}"
+                         VerticalContentAlignment="Center"/>
+            </DockPanel>
+            <DockPanel Grid.Row="5" Grid.Column="1" Height="25">
+                <Label Content="City" Target="{Binding ElementName=City}" VerticalAlignment="Center" Width="80"/>
+                <TextBox x:Name="City" Text="{Binding SelectedEmployee.Address.City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding SelectedEmployee.Address.CityIsChanged, Converter={StaticResource BoolToBackgroundConverter}}"
+                         VerticalContentAlignment="Center"/>
+            </DockPanel>
+
+            <TextBlock Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" FontWeight="SemiBold" FontSize="15" Text="Email"/>
+            <DockPanel Grid.Row="3" Grid.Column="2" Height="25">
+                <Label Content="Email" Target="{Binding ElementName=Email}" VerticalAlignment="Center" Width="80"/>
+                <TextBox x:Name="Email" IsEnabled="{Binding SelectedEmployee.EmailIsSelected}"
+                         Text="{Binding SelectedEmployee.SelectedEmail.EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{Binding SelectedEmployee.Emails.IsChanged, Converter={StaticResource BoolToBackgroundConverter}}"
+                         VerticalContentAlignment="Center"/>
+            </DockPanel>
+            <Grid Grid.Row="4" Grid.Column="2" Height="25">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <control:CustomButton Grid.Column="2" Content="+" ToolTip="Add email address" Command="{Binding AddEmail}"/>
+                <control:CustomButton Grid.Column="3" Content="-" ToolTip="Remove email address" Command="{Binding RemoveEmail}"/>
+            </Grid>
+            <Grid Grid.Row="0" Column="0" ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <control:CustomButton Grid.Column="0" Content="New Employee" Style="{StaticResource NavigationButton}" Command="{Binding NewEmployee}"/>
+                <control:CustomButton Grid.Column="1" Content="Reset Employee" Style="{StaticResource NavigationButton}" Command="{Binding ResetEmployee}"/>
+                <control:CustomButton Grid.Column="2" Content="Save Employee" Style="{StaticResource NavigationButton}" Command="{Binding SaveEmployee}"/>
+                <control:CustomButton Grid.Column="3" Content="Delete Employee" Style="{StaticResource NavigationButton}" Command="{Binding DeleteEmployee}"/>
+            </Grid>
+
+
+        </Grid>
+    </Grid>
+</Window>
